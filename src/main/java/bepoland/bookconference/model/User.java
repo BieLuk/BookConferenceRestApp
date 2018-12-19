@@ -2,6 +2,7 @@ package bepoland.bookconference.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -35,6 +36,8 @@ public class User {
     @Size(min = 6, max = 100)
     @NotBlank
     private String password;
+
+    private Boolean available = true;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles",

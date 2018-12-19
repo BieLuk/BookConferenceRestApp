@@ -2,6 +2,8 @@ package bepoland.bookconference.service;
 
 import bepoland.bookconference.Config.Security.JwtTokenProvider;
 import bepoland.bookconference.Exception.AppException;
+import bepoland.bookconference.dto.UserDTO;
+import bepoland.bookconference.dto.UserEditDTO;
 import bepoland.bookconference.dto.UserLoginDTO;
 import bepoland.bookconference.dto.UserSignUpDTO;
 import bepoland.bookconference.model.Role;
@@ -13,6 +15,7 @@ import bepoland.bookconference.response.ApiResponse;
 import bepoland.bookconference.response.JwtAuthenticationResponse;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,21 +26,27 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class AuthService {
+public class UserService {
 
-    final AuthenticationManager authenticationManager;
-    final UserRepository userRepository;
-    final RoleRepository roleRepository;
-    final PasswordEncoder passwordEncoder;
-    final JwtTokenProvider tokenProvider;
-    private ModelMapper modelMapper = new ModelMapper();
+    private final AuthenticationManager authenticationManager;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider tokenProvider;
+    private final ModelMapper modelMapper = new ModelMapper();
 
+    public UserDTO getUser(String userLogin) {
+        User user = userRepository.findByLogin(userLogin)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found login: " + userLogin));
+        return modelMapper.map(user, UserDTO.class);
+    }
 
     public ResponseEntity<JwtAuthenticationResponse> authenticateUser(UserLoginDTO userLoginDTO) {
-
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         userLoginDTO.getLogin(),
@@ -47,11 +56,8 @@ public class AuthService {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         String jwt = tokenProvider.generateToken(authentication);
-//        User user =
                 userRepository.findByLogin(userLoginDTO.getLogin())
                 .orElseThrow(() -> new UsernameNotFoundException("User does not exist."));
-//        UserSimpleDTO userDTO = modelMapper.map(user, UserSimpleDTO.class);
-//        return new JwtAuthenticationResponse(jwt);
         return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
     }
 
@@ -60,7 +66,6 @@ public class AuthService {
             return new ApiResponse(false, "Login is already taken.");
         }
 
-        // Creating user's account
         User user = new User(userSignUpDTO.getName(), userSignUpDTO.getSurname(),
                 userSignUpDTO.getLogin(), userSignUpDTO.getPassword());
 
@@ -71,9 +76,34 @@ public class AuthService {
 
         user.setRoles(Collections.singleton(userRole));
 
-        User result = userRepository.save(user);
+        userRepository.save(user);
         return new ApiResponse(true, "User created successfully.");
     }
+
+    public ApiResponse editUser(UserEditDTO userEditDTO) {
+        User user = userRepository.findByLogin(userEditDTO.getLogin())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found login: " + userEditDTO.getLogin()));
+        if ((userEditDTO.getName() != null)) { user.setName(userEditDTO.getName()); }
+        if ((userEditDTO.getSurname() != null)) { user.setSurname(userEditDTO.getSurname()); }
+        if ((userEditDTO.getPassword() != null)) { user.setPassword(passwordEncoder.encode(user.getPassword())); }
+
+        userRepository.save(user);
+        return new ApiResponse(true, "User edited successfully.");
+    }
+
+    public List<UserDTO> getAvailableUsers() {
+        return userRepository.findAllByAvailable(true).stream()
+                .map(user -> modelMapper.map(user, UserDTO.class)).collect(Collectors.toList());
+    }
+
+    public ApiResponse deleteUser(String userLogin) {
+        User user = userRepository.findByLogin(userLogin)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found login: " + userLogin));
+        userRepository.delete(user);
+        return new ApiResponse(true, "User deleted successfully.");
+    }
+
+
 
 
 
