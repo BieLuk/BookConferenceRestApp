@@ -33,12 +33,12 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public ApiResponse registerUser(@Valid @RequestBody UserSignUpDTO userSignUpDTO, String passKey) {
+    public ApiResponse registerUser(@Valid @RequestBody UserSignUpDTO userSignUpDTO, @RequestHeader(value="x-api-key") String passKey) {
         return userService.registerUser(userSignUpDTO, passKey);
     }
 
     @PutMapping("/edit")
-    public ApiResponse editUser(@Valid @RequestBody UserEditDTO userEditDTO, String passKey) {
+    public ApiResponse editUser(@Valid @RequestBody UserEditDTO userEditDTO, @RequestHeader(value="x-api-key") String passKey) {
         return userService.editUser(userEditDTO, passKey);
     }
 
@@ -48,7 +48,7 @@ public class UserController {
     }
 
     @DeleteMapping("/delete")
-    public ApiResponse deleteUser(String userLogin, String passKey) {
+    public ApiResponse deleteUser(String userLogin, @RequestHeader(value="x-api-key") String passKey) {
         return userService.deleteUser(userLogin, passKey);
     }
 }
