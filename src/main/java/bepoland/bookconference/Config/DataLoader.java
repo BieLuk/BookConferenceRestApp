@@ -8,6 +8,7 @@ import bepoland.bookconference.repository.RoleRepository;
 import bepoland.bookconference.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
@@ -15,6 +16,9 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class DataLoader implements ApplicationListener<ContextRefreshedEvent> {
+
+    @Value("${app.adminPass}")
+    private String adminPass;
 
     private final UserService userService;
     private ModelMapper modelMapper = new ModelMapper();
@@ -36,14 +40,14 @@ public class DataLoader implements ApplicationListener<ContextRefreshedEvent> {
         user1.setSurname("Smith");
         user1.setLogin("jsmith");
         user1.setPassword("qwerty");
-        userService.registerUser(modelMapper.map(user1, UserSignUpDTO.class));
+        userService.registerUser(modelMapper.map(user1, UserSignUpDTO.class), adminPass);
 
         User user2 = new User();
         user2.setName("Jane");
         user2.setSurname("Doe");
         user2.setLogin("jdoe");
         user2.setPassword("mySecret");
-        userService.registerUser(modelMapper.map(user2, UserSignUpDTO.class));
+        userService.registerUser(modelMapper.map(user2, UserSignUpDTO.class), adminPass);
 
     }
 }

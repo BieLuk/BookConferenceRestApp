@@ -2,7 +2,7 @@ package bepoland.bookconference.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -12,6 +12,7 @@ import java.util.Set;
 
 @Data
 @NoArgsConstructor
+@DynamicUpdate
 @Entity
 @Table(name = "users")
 public class User {

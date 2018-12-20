@@ -33,13 +33,13 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public ApiResponse registerUser(@Valid @RequestBody UserSignUpDTO userSignUpDTO) {
-        return userService.registerUser(userSignUpDTO);
+    public ApiResponse registerUser(@Valid @RequestBody UserSignUpDTO userSignUpDTO, String passKey) {
+        return userService.registerUser(userSignUpDTO, passKey);
     }
 
-    @PutMapping
-    public ApiResponse editUser(@Valid @RequestBody UserEditDTO userEditDTO) {
-        return userService.editUser(userEditDTO);
+    @PutMapping("/edit")
+    public ApiResponse editUser(@Valid @RequestBody UserEditDTO userEditDTO, String passKey) {
+        return userService.editUser(userEditDTO, passKey);
     }
 
     @GetMapping("/available")
@@ -47,8 +47,8 @@ public class UserController {
         return userService.getAvailableUsers();
     }
 
-    @DeleteMapping
-    public ApiResponse deleteUser(String userLogin) {
-        return userService.deleteUser(userLogin);
+    @DeleteMapping("/delete")
+    public ApiResponse deleteUser(String userLogin, String passKey) {
+        return userService.deleteUser(userLogin, passKey);
     }
 }

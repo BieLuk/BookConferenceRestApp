@@ -14,7 +14,9 @@ import bepoland.bookconference.repository.UserRepository;
 import bepoland.bookconference.response.ApiResponse;
 import bepoland.bookconference.response.JwtAuthenticationResponse;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.Condition;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -32,6 +34,9 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class UserService {
+
+    @Value("${app.adminPass}")
+    private String adminPass;
 
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
@@ -61,34 +66,41 @@ public class UserService {
         return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
     }
 
-    public ApiResponse registerUser(UserSignUpDTO userSignUpDTO) {
-        if(userRepository.existsByLogin(userSignUpDTO.getLogin())) {
-            return new ApiResponse(false, "Login is already taken.");
+    public ApiResponse registerUser(UserSignUpDTO userSignUpDTO, String passKey) {
+        if(passKey!=null && passKey.equals(adminPass)) {
+            if (userRepository.existsByLogin(userSignUpDTO.getLogin())) {
+                return new ApiResponse(false, "Login is already taken.");
+            }
+
+            User user = new User(userSignUpDTO.getName(), userSignUpDTO.getSurname(),
+                    userSignUpDTO.getLogin(), userSignUpDTO.getPassword());
+
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+            Role userRole = roleRepository.findByName(RoleName.ROLE_USER)
+                    .orElseThrow(() -> new AppException("User Role not set."));
+
+            user.setRoles(Collections.singleton(userRole));
+
+            userRepository.save(user);
+            return new ApiResponse(true, "User created successfully.");
         }
-
-        User user = new User(userSignUpDTO.getName(), userSignUpDTO.getSurname(),
-                userSignUpDTO.getLogin(), userSignUpDTO.getPassword());
-
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-
-        Role userRole = roleRepository.findByName(RoleName.ROLE_USER)
-                .orElseThrow(() -> new AppException("User Role not set."));
-
-        user.setRoles(Collections.singleton(userRole));
-
-        userRepository.save(user);
-        return new ApiResponse(true, "User created successfully.");
+        return new ApiResponse(false, "Wrong password key.");
     }
 
-    public ApiResponse editUser(UserEditDTO userEditDTO) {
-        User user = userRepository.findByLogin(userEditDTO.getLogin())
-                .orElseThrow(() -> new ResourceNotFoundException("User not found login: " + userEditDTO.getLogin()));
-        if ((userEditDTO.getName() != null)) { user.setName(userEditDTO.getName()); }
-        if ((userEditDTO.getSurname() != null)) { user.setSurname(userEditDTO.getSurname()); }
-        if ((userEditDTO.getPassword() != null)) { user.setPassword(passwordEncoder.encode(user.getPassword())); }
+    public ApiResponse editUser(UserEditDTO userEditDTO, String passKey) {
+        if(passKey!=null && passKey.equals(adminPass)) {
+            User user = userRepository.findByLogin(userEditDTO.getLogin())
+                    .orElseThrow(() -> new ResourceNotFoundException("User not found login: " + userEditDTO.getLogin()));
+            if ((userEditDTO.getName() != null)) { user.setName(userEditDTO.getName()); }
+            if ((userEditDTO.getSurname() != null)) { user.setSurname(userEditDTO.getSurname()); }
+            if ((userEditDTO.getPassword() != null)) { user.setPassword(passwordEncoder.encode(user.getPassword())); }
 
-        userRepository.save(user);
-        return new ApiResponse(true, "User edited successfully.");
+            userRepository.save(user);
+            return new ApiResponse(true, "User edited successfully.");
+        }
+        return new ApiResponse(false, "Wrong password key.");
+
     }
 
     public List<UserDTO> getAvailableUsers() {
@@ -96,11 +108,14 @@ public class UserService {
                 .map(user -> modelMapper.map(user, UserDTO.class)).collect(Collectors.toList());
     }
 
-    public ApiResponse deleteUser(String userLogin) {
-        User user = userRepository.findByLogin(userLogin)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found login: " + userLogin));
-        userRepository.delete(user);
-        return new ApiResponse(true, "User deleted successfully.");
+    public ApiResponse deleteUser(String userLogin, String passKey) {
+        if(passKey!=null && passKey.equals(adminPass)) {
+            User user = userRepository.findByLogin(userLogin)
+                    .orElseThrow(() -> new ResourceNotFoundException("User not found login: " + userLogin));
+            userRepository.delete(user);
+            return new ApiResponse(true, "User deleted successfully.");
+        }
+        return new ApiResponse(false, "Wrong password key.");
     }
 
 
