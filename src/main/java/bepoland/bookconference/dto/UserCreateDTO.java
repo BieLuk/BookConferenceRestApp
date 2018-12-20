@@ -7,7 +7,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 @Data
-public class UserSignUpDTO {
+public class UserCreateDTO {
 
     @Size(max = 50)
     @NotBlank

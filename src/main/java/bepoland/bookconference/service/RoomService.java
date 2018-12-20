@@ -1,32 +1,15 @@
 package bepoland.bookconference.service;
 
-import bepoland.bookconference.Config.Security.JwtTokenProvider;
-import bepoland.bookconference.Exception.AppException;
 import bepoland.bookconference.dto.*;
-import bepoland.bookconference.model.Role;
-import bepoland.bookconference.model.RoleName;
 import bepoland.bookconference.model.Room;
-import bepoland.bookconference.model.User;
-import bepoland.bookconference.repository.RoleRepository;
 import bepoland.bookconference.repository.RoomRepository;
-import bepoland.bookconference.repository.UserRepository;
 import bepoland.bookconference.response.ApiResponse;
-import bepoland.bookconference.response.JwtAuthenticationResponse;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.Condition;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 

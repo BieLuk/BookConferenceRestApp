@@ -2,13 +2,10 @@ package bepoland.bookconference.controller;
 
 import bepoland.bookconference.dto.UserDTO;
 import bepoland.bookconference.dto.UserEditDTO;
-import bepoland.bookconference.dto.UserLoginDTO;
-import bepoland.bookconference.dto.UserSignUpDTO;
+import bepoland.bookconference.dto.UserCreateDTO;
 import bepoland.bookconference.response.ApiResponse;
-import bepoland.bookconference.response.JwtAuthenticationResponse;
 import bepoland.bookconference.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -27,14 +24,9 @@ public class UserController {
         return userService.getUser(userLogin);
     }
 
-    @PostMapping("/signin")
-    public ResponseEntity<JwtAuthenticationResponse> authenticateUser(@Valid @RequestBody UserLoginDTO userLoginDTO) {
-        return userService.authenticateUser(userLoginDTO);
-    }
-
     @PostMapping("/signup")
-    public ApiResponse registerUser(@Valid @RequestBody UserSignUpDTO userSignUpDTO, @RequestHeader(value="x-api-key") String passKey) {
-        return userService.registerUser(userSignUpDTO, passKey);
+    public ApiResponse registerUser(@Valid @RequestBody UserCreateDTO userCreateDTO, @RequestHeader(value="x-api-key") String passKey) {
+        return userService.createUser(userCreateDTO, passKey);
     }
 
     @PutMapping("/edit")
