@@ -11,5 +11,4 @@ public class RoomDTO {
     private Integer numberOfSeats;
     private Boolean hasProjector = false;
     private String phone;
-    private Boolean available;
 }

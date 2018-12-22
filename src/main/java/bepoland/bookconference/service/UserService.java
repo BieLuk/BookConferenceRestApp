@@ -63,7 +63,7 @@ public class UserService {
     }
 
     public List<UserDTO> getAvailableUsers() {
-        return userRepository.findAllByAvailable(true).stream()
+        return userRepository.findAll().stream()
                 .map(user -> modelMapper.map(user, UserDTO.class)).collect(Collectors.toList());
     }
 

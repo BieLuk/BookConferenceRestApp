@@ -10,5 +10,4 @@ public class UserDTO {
     private String surname;
     private String login;
     private String password;
-    private Boolean available;
 }

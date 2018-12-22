@@ -60,7 +60,7 @@ public class RoomService {
     }
 
     public List<RoomDTO> getAvailableRooms() {
-        return roomRepository.findAllByAvailable(true).stream()
+        return roomRepository.findAll().stream()
                 .map(room -> modelMapper.map(room, RoomDTO.class)).collect(Collectors.toList());
     }
 
