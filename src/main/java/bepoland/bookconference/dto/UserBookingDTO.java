@@ -3,9 +3,8 @@ package bepoland.bookconference.dto;
 import lombok.Data;
 
 @Data
-public class UserDTO {
+public class UserBookingDTO {
 
     private String name;
     private String surname;
-    private String login;
 }
