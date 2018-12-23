@@ -26,13 +26,6 @@ public class RoomService {
     private final RoomRepository roomRepository;
     private final ModelMapper modelMapper = new ModelMapper();
 
-    public RoomDTO getRoom(String roomName) {
-        Room room = roomRepository.findByName(roomName)
-                .orElseThrow(() -> new ResourceNotFoundException("Room not found login: " + roomName));
-        return modelMapper.map(room, RoomDTO.class);
-    }
-    // TODO passkey validation annotation
-
     public ApiResponse createRoom(@Valid RoomCreateDTO roomCreateDTO, String passKey) {
         if(passKey!=null && passKey.equals(adminPass)) {
             if (roomRepository.existsByName(roomCreateDTO.getName())) {

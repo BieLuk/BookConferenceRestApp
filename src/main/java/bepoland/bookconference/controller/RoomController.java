@@ -17,11 +17,6 @@ public class RoomController {
 
     final RoomService roomService;
 
-    @GetMapping
-    public RoomDTO getRoom(String roomName) {
-        return roomService.getRoom(roomName);
-    }
-
     @PostMapping("/create")
     public ApiResponse createRoom(@RequestBody RoomCreateDTO roomCreateDTO, @RequestHeader(value="x-api-key") String passKey) {
         return roomService.createRoom(roomCreateDTO, passKey);

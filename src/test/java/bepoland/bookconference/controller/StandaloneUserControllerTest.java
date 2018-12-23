@@ -113,11 +113,8 @@ public class StandaloneUserControllerTest {
 
     @Test
     public void givenUserDto_whenEditUser_thenReturnApiResponse_success() throws Exception {
-        UserEditDTO user = new UserEditDTO();
-        user.setName("John");
-        user.setSurname("Bloom");
-        user.setLogin("mbloom");
-        user.setPassword("123456");
+
+        UserEditDTO user = new UserEditDTO("John", "Bloom", "mbloom", "123456");
 
         given(userService.editUser(user, adminPass)).willReturn(new ApiResponse(true, "User edited successfully."));
 
