@@ -1,12 +1,7 @@
 package bepoland.bookconference.model;
 
-import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.validator.constraints.Length;
-
 import javax.persistence.*;
-import javax.validation.constraints.Size;
 
-//@DynamicUpdate
 @Entity
 @Table(name = "users")
 public class User {

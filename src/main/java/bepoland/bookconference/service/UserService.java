@@ -31,12 +31,6 @@ public class UserService {
     private final UserRepository userRepository;
     private final ModelMapper modelMapper = new ModelMapper();
 
-    public UserDTO getUser(String userLogin) {
-        User user = userRepository.findByLogin(userLogin)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found login: " + userLogin));
-        return modelMapper.map(user, UserDTO.class);
-    }
-
     public ApiResponse createUser(@Valid UserCreateDTO userCreateDTO, String passKey) {
         if(passKey!=null && passKey.equals(adminPass)) {
             if (userRepository.existsByLogin(userCreateDTO.getLogin())) {

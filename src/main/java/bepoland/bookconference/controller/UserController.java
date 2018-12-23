@@ -18,13 +18,8 @@ public class UserController {
 
     final UserService userService;
 
-    @GetMapping
-    public UserDTO getUser(String userLogin) {
-        return userService.getUser(userLogin);
-    }
-
     @PostMapping("/create")
-    public ApiResponse registerUser(@RequestBody UserCreateDTO userCreateDTO, @RequestHeader(value="x-api-key") String passKey) {
+    public ApiResponse createUser(@RequestBody UserCreateDTO userCreateDTO, @RequestHeader(value="x-api-key") String passKey) {
         return userService.createUser(userCreateDTO, passKey);
     }
 

@@ -1,11 +1,13 @@
 package bepoland.bookconference.dto;
 
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.Column;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
 public class UserCreateDTO {
 
