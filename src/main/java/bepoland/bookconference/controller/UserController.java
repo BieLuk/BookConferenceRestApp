@@ -8,7 +8,6 @@ import bepoland.bookconference.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 
@@ -24,13 +23,13 @@ public class UserController {
         return userService.getUser(userLogin);
     }
 
-    @PostMapping("/signup")
-    public ApiResponse registerUser(@Valid @RequestBody UserCreateDTO userCreateDTO, @RequestHeader(value="x-api-key") String passKey) {
+    @PostMapping("/create")
+    public ApiResponse registerUser(@RequestBody UserCreateDTO userCreateDTO, @RequestHeader(value="x-api-key") String passKey) {
         return userService.createUser(userCreateDTO, passKey);
     }
 
     @PutMapping("/edit")
-    public ApiResponse editUser(@Valid @RequestBody UserEditDTO userEditDTO, @RequestHeader(value="x-api-key") String passKey) {
+    public ApiResponse editUser(@RequestBody UserEditDTO userEditDTO, @RequestHeader(value="x-api-key") String passKey) {
         return userService.editUser(userEditDTO, passKey);
     }
 

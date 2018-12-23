@@ -9,11 +9,14 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Validated
 @RequiredArgsConstructor
 public class RoomService {
 
@@ -25,12 +28,12 @@ public class RoomService {
 
     public RoomDTO getRoom(String roomName) {
         Room room = roomRepository.findByName(roomName)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found login: " + roomName));
+                .orElseThrow(() -> new ResourceNotFoundException("Room not found login: " + roomName));
         return modelMapper.map(room, RoomDTO.class);
     }
     // TODO passkey validation annotation
 
-    public ApiResponse createRoom(RoomCreateDTO roomCreateDTO, String passKey) {
+    public ApiResponse createRoom(@Valid RoomCreateDTO roomCreateDTO, String passKey) {
         if(passKey!=null && passKey.equals(adminPass)) {
             if (roomRepository.existsByName(roomCreateDTO.getName())) {
                 return new ApiResponse(false, "Name is already taken.");
@@ -43,7 +46,7 @@ public class RoomService {
         return new ApiResponse(false, "Wrong password key.");
     }
 
-    public ApiResponse editRoom(RoomEditDTO roomEditDTO, String passKey) {
+    public ApiResponse editRoom(@Valid RoomEditDTO roomEditDTO, String passKey) {
         if(passKey!=null && passKey.equals(adminPass)) {
             Room room = roomRepository.findByName(roomEditDTO.getName())
                 .orElseThrow(() -> new ResourceNotFoundException("Room not found name: " + roomEditDTO.getName()));

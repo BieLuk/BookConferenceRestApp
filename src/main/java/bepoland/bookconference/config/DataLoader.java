@@ -1,4 +1,4 @@
-package bepoland.bookconference.Config;
+package bepoland.bookconference.config;
 
 import bepoland.bookconference.dto.RoomCreateDTO;
 import bepoland.bookconference.dto.UserCreateDTO;

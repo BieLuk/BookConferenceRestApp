@@ -8,7 +8,6 @@ import bepoland.bookconference.service.RoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -24,12 +23,12 @@ public class RoomController {
     }
 
     @PostMapping("/create")
-    public ApiResponse createRoom(@Valid @RequestBody RoomCreateDTO roomCreateDTO, @RequestHeader(value="x-api-key") String passKey) {
+    public ApiResponse createRoom(@RequestBody RoomCreateDTO roomCreateDTO, @RequestHeader(value="x-api-key") String passKey) {
         return roomService.createRoom(roomCreateDTO, passKey);
     }
 
     @PutMapping("/edit")
-    public ApiResponse editRoom(@Valid @RequestBody RoomEditDTO roomEditDTO, @RequestHeader(value="x-api-key") String passKey) {
+    public ApiResponse editRoom(@RequestBody RoomEditDTO roomEditDTO, @RequestHeader(value="x-api-key") String passKey) {
         return roomService.editRoom(roomEditDTO, passKey);
     }
 
