@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
@@ -21,6 +22,7 @@ import java.util.List;
 
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -28,6 +30,7 @@ import static sun.plugin2.util.PojoUtil.toJson;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebMvcTest(RoomController.class)
+@AutoConfigureRestDocs
 public class StandaloneRoomControllerTest {
 
     @Autowired
@@ -43,21 +46,8 @@ public class StandaloneRoomControllerTest {
     @Test
     public void givenRooms_whenGetAvailableRooms_thenReturnJsonArray() throws Exception {
 
-        RoomDTO room1 = RoomDTO.builder()
-                .name("Small Room")
-                .locationDescription("1st floor")
-                .numberOfSeats(8)
-                .hasProjector(false)
-                .phone("+48-111-222-333")
-                .build();
-
-        RoomDTO room2 = RoomDTO.builder()
-                .name("Medium Room")
-                .locationDescription("2nd floor")
-                .numberOfSeats(14)
-                .hasProjector(true)
-                .phone("+48-999-888-777")
-                .build();
+        RoomDTO room1 = new RoomDTO("Small room", "1st floor", 8, false, "+48-111-222-333");
+        RoomDTO room2 = new RoomDTO("Medium room", "2nd floor", 14, true, "+48-999-888-777");
 
         List<RoomDTO> allRooms = Arrays.asList(room1, room2);
 
@@ -81,7 +71,8 @@ public class StandaloneRoomControllerTest {
                 .content(toJson(room)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.message").value("Room created successfully."));
+                .andExpect(jsonPath("$.message").value("Room created successfully."))
+                .andDo(document("create-room-success"));
     }
 
 
@@ -112,7 +103,8 @@ public class StandaloneRoomControllerTest {
                 .content(toJson(room)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.message").value("Room edited successfully."));
+                .andExpect(jsonPath("$.message").value("Room edited successfully."))
+                .andDo(document("edit-room-success"));
     }
 
     @Test
@@ -126,7 +118,8 @@ public class StandaloneRoomControllerTest {
                 .param("roomName", roomName))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.message").value("Room deleted successfully."));
+                .andExpect(jsonPath("$.message").value("Room deleted successfully."))
+                .andDo(document("delete-room-success"));
     }
 
     @Test

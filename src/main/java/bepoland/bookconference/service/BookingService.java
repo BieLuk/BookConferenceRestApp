@@ -1,7 +1,9 @@
 package bepoland.bookconference.service;
 
+import bepoland.bookconference.config.ApiResponseExceptionHandler;
 import bepoland.bookconference.dto.BookingCreateDTO;
 import bepoland.bookconference.dto.BookingDTO;
+import bepoland.bookconference.exception.ResourceNotFoundException;
 import bepoland.bookconference.model.Booking;
 import bepoland.bookconference.model.Room;
 import bepoland.bookconference.model.User;
@@ -12,7 +14,6 @@ import bepoland.bookconference.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 
-import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -59,6 +60,7 @@ public class BookingService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         Room room = roomRepository.findByName(roomName)
                 .orElseThrow(() -> new ResourceNotFoundException("Room not found name: " + roomName));
+//                .orElseThrow(() -> new ApiResponseExceptionHandler().handleException(new ResourceNotFoundException("Room not found name: "), roomName));
 
         if(dateFrom == null && dateTo == null){
             return bookingRepository.findAllByRoom(room).stream()

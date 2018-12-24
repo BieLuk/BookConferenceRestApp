@@ -1,13 +1,13 @@
 package bepoland.bookconference.service;
 
 import bepoland.bookconference.dto.*;
+import bepoland.bookconference.exception.ResourceNotFoundException;
 import bepoland.bookconference.model.Room;
 import bepoland.bookconference.repository.RoomRepository;
 import bepoland.bookconference.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 

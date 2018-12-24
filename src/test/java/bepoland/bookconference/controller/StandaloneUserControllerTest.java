@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
@@ -21,6 +22,7 @@ import java.util.List;
 
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -28,6 +30,7 @@ import static sun.plugin2.util.PojoUtil.toJson;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebMvcTest(UserController.class)
+@AutoConfigureRestDocs
 public class StandaloneUserControllerTest {
 
     @Autowired
@@ -42,17 +45,8 @@ public class StandaloneUserControllerTest {
     @Test
     public void givenUsers_whenGetAvailableUsers_thenReturnJsonArray() throws Exception {
 
-        UserDTO user1 = UserDTO.builder()
-                .name("John")
-                .surname("Smith")
-                .login("jsmith")
-                .build();
-
-        UserDTO user2 = UserDTO.builder()
-                .name("Jane")
-                .surname("Doe")
-                .login("jdoe")
-                .build();
+        UserDTO user1 = new UserDTO("John", "Smith", "jsmith");
+        UserDTO user2 = new UserDTO("Jane", "Doe", "jdoe");
 
         List<UserDTO> allUsers = Arrays.asList(user1, user2);
 
@@ -77,7 +71,8 @@ public class StandaloneUserControllerTest {
                 .content(toJson(user)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.message").value("User created successfully."));
+                .andExpect(jsonPath("$.message").value("User created successfully."))
+                .andDo(document("create-user-success"));
     }
 
     @Test
@@ -123,7 +118,8 @@ public class StandaloneUserControllerTest {
                 .content(toJson(user)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.message").value("User edited successfully."));
+                .andExpect(jsonPath("$.message").value("User edited successfully."))
+                .andDo(document("edit-user-success"));
     }
 
     @Test
@@ -137,7 +133,8 @@ public class StandaloneUserControllerTest {
                 .param("userLogin", userLogin))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.message").value("User deleted successfully."));
+                .andExpect(jsonPath("$.message").value("User deleted successfully."))
+                .andDo(document("delete-user-success"));
     }
 
 

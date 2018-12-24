@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -23,6 +24,7 @@ import java.util.List;
 
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -31,6 +33,7 @@ import static sun.plugin2.util.PojoUtil.toJson;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebMvcTest(BookingController.class)
+@AutoConfigureRestDocs
 public class StandaloneBookingControllerTest {
 
     @Autowired
@@ -70,7 +73,8 @@ public class StandaloneBookingControllerTest {
                 .param("dateFrom", "2018-12-23 15:00:00")
                 .param("dateTo", "2018-12-23 20:00:00"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)));
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andDo(document("booking-all-allArgs"));
 
     }
 
@@ -85,7 +89,8 @@ public class StandaloneBookingControllerTest {
                 .param("dateFrom", "2018-12-23 10:00:00")
                 .param("dateTo", ""))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(2)));
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andDo(document("booking-all-dateFromOnly"));
     }
 
     @Test
@@ -99,7 +104,8 @@ public class StandaloneBookingControllerTest {
                 .param("dateFrom", "")
                 .param("dateTo", "2018-12-23 20:00:00"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(2)));
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andDo(document("booking-all-dateToOnly"));
     }
 
     @Test
@@ -113,7 +119,8 @@ public class StandaloneBookingControllerTest {
                 .param("dateFrom", "")
                 .param("dateTo", ""))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(2)));
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andDo(document("booking-all-noArgs"));
     }
 
     @Test
@@ -128,7 +135,8 @@ public class StandaloneBookingControllerTest {
                 .param("dateFrom", "2018-12-23 15:00:00")
                 .param("dateTo", "2018-12-23 20:00:00"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)));
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andDo(document("booking-room-allArgs"));
 
     }
 
@@ -144,7 +152,8 @@ public class StandaloneBookingControllerTest {
                 .param("dateFrom", "2018-12-23 10:00:00")
                 .param("dateTo", ""))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)));
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andDo(document("booking-room-dateFromOnly"));
     }
 
     @Test
@@ -159,7 +168,8 @@ public class StandaloneBookingControllerTest {
                 .param("dateFrom", "")
                 .param("dateTo", "2018-12-23 20:00:00"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)));
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andDo(document("booking-room-dateToOnly"));
     }
 
     @Test
@@ -174,7 +184,8 @@ public class StandaloneBookingControllerTest {
                 .param("dateFrom", "")
                 .param("dateTo", ""))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)));
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andDo(document("booking-room-noArgs"));
     }
 
     @Test
@@ -189,7 +200,8 @@ public class StandaloneBookingControllerTest {
                 .param("dateFrom", "2018-12-23 15:00:00")
                 .param("dateTo", "2018-12-23 20:00:00"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)));
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andDo(document("booking-user-allArgs"));
 
     }
 
@@ -205,7 +217,8 @@ public class StandaloneBookingControllerTest {
                 .param("dateFrom", "2018-12-23 10:00:00")
                 .param("dateTo", ""))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)));
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andDo(document("booking-user-dateFromOnly"));
     }
 
     @Test
@@ -220,7 +233,8 @@ public class StandaloneBookingControllerTest {
                 .param("dateFrom", "")
                 .param("dateTo", "2018-12-23 20:00:00"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)));
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andDo(document("booking-user-dateToOnly"));
     }
 
     @Test
@@ -235,7 +249,8 @@ public class StandaloneBookingControllerTest {
                 .param("dateFrom", "")
                 .param("dateTo", ""))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)));
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andDo(document("booking-user-noArgs"));
     }
 
     @Test
@@ -249,7 +264,8 @@ public class StandaloneBookingControllerTest {
                 .content(toJson(booking.getDateFrom().toString())))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.success").value(true))
-                .andExpect(jsonPath("$.message").value("Successfully booked room."));
+                .andExpect(jsonPath("$.message").value("Successfully booked room."))
+                .andDo(document("booking-book-success"));
     }
 
 
