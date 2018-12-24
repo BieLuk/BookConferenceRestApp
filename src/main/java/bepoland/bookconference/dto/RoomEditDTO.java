@@ -26,7 +26,7 @@ public class RoomEditDTO {
     @Max(100)
     private Integer numberOfSeats;
 
-    private Boolean hasProjector = false;
+    private Boolean hasProjector;
 
     @Size(max = 100)
     private String phone;
