@@ -54,7 +54,8 @@ public class StandaloneUserControllerTest {
 
         mockMvc.perform(get("/user/available"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(2)));
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andDo(document("available-user-success"));
 
     }
 

@@ -55,7 +55,8 @@ public class StandaloneRoomControllerTest {
 
         mockMvc.perform(get("/room/available"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(2)));
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andDo(document("available-room-success"));
     }
 
 
